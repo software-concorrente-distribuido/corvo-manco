@@ -1,3 +1,19 @@
+Wrong case - deadlock after a few iterations
+```
+Processamento B
+Região Crítica B
+Processamento B
+Região Crítica B
+Processamento B
+Região Crítica B
+Processamento B
+Região Crítica B
+Processamento B
+Processamento A
+Região Crítica B
+Processamento B
+```
+
 ```
 Região Crítica B
 Processamento B

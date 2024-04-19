@@ -1,4 +1,4 @@
-Wrong case
+Wrong case - 2 processes in the critical region at the same time
 ```
 Região Crítica A
 Processamento A
