@@ -1,3 +1,5 @@
+Logs
+```
 Goroutine 10 entrou na região crítica.
 Goroutine 3 entrou na região crítica.
 Goroutine 1 entrou na região crítica.
@@ -19,3 +21,4 @@ Goroutine 5 saiu da região crítica.
 Goroutine 9 saiu da região crítica.
 Goroutine 6 saiu da região crítica.
 Todas as goroutines completaram a execução.
+```
