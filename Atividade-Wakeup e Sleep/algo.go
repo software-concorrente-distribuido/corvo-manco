@@ -23,8 +23,8 @@ func NewBuffer(maxLen int) *Buffer {
 func (b *Buffer) Produce(item int) {
 	b.cond.L.Lock()
 	for len(b.queue) == b.maxLen {
-		b.cond.Wait()
 		fmt.Println("Buffer is full")
+		b.cond.Wait()
 	}
 	b.queue = append(b.queue, item)
 	fmt.Printf("Produced: %d\n", item)
@@ -35,8 +35,8 @@ func (b *Buffer) Produce(item int) {
 func (b *Buffer) Consume() int {
 	b.cond.L.Lock()
 	for len(b.queue) == 0 {
-		b.cond.Wait()
 		fmt.Println("Buffer is null")
+		b.cond.Wait()
 	}
 	item := b.queue[0]
 	b.queue = b.queue[1:]
