@@ -1,4 +1,4 @@
-Logs
+Output Logs
 ```
 Goroutine 10 entrou na região crítica.
 Goroutine 3 entrou na região crítica.
