@@ -2,11 +2,11 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   :root{
-    --background: linear-gradient(135deg, #FFF 0%, #FFF 100%);
+    --background: #161616;
     --red: #f2295b;
     --purple: #532d8c;
     --purpleh1: #633e94;
-    --white: #f3f5f7;
+    --white: #F3F3F3;
   }
 
   *{
