@@ -1,44 +1,62 @@
 import styled from 'styled-components';
 
-export const Home = styled.div`
+export const Booking = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 `;
 
 export const Main = styled.main`
-  background-color: var(--background);
-  color: #fff;
-  padding: 1rem 0;
-`;
-
-export const Container = styled.div`
-  position: relative;
-  width: 100%; /* Ajuste a largura conforme necessário */
-  height: 100vh; /* ou a altura que você deseja que o vídeo cubra */
-  overflow: hidden;
-`;
-
-export const MediaContainer = styled.video`
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  min-width: 100%;
-  min-height: 100%;
+  display: flex;
+  flex: 1;
 `;
 
 export const Content = styled.div`
-  position: fixed;
+  display: flex;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  color: #f1f1f1;
-  width: 100%;
+  color: #fff;
+  max-width: 80%;
+  gap: 40px;
+  flex: 1;
   padding: 20px;
+  margin: 36px auto;
+  justify-content: space-between;
 `;
 
-export const Footer = styled.footer`
-  background-color: var(--white);
-  color: #000;
-  padding: 1rem 0;
-  margin-top: auto;
+export const LeftContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const RightContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  span {
+    font-size: 24px;
+  }
+
+  img {
+    width: 660px;
+    height: 400px;
+    background-color: #f1f1f1;
+
+    object-fit: center;
+  }
+`;
+
+export const GameSelectorWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+export const GameInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 40px;
 `;

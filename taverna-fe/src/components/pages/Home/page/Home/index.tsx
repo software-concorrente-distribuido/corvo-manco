@@ -1,7 +1,6 @@
-import taverna_footer from '../../../../../assets/taverna-footer.svg';
-
 import * as S from './styles';
 import Header from '../../atoms/Header';
+import Footer from '../../atoms/Footer';
 
 export function Home() {
   return (
@@ -26,9 +25,10 @@ export function Home() {
           amizades. Aqui você encontra jogos, bebidas e muita diversão!
         </p>
       </S.Content> */}
-      <S.Footer>
-        <img src={taverna_footer} alt="Logo da Taverna" />
-      </S.Footer>
+      <S.Main>
+        <S.Content>Working on it...</S.Content>
+      </S.Main>
+      <Footer />
     </S.Home>
   );
 }
