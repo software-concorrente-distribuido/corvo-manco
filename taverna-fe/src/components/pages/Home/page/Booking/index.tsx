@@ -6,9 +6,11 @@ import { useState } from 'react';
 import { GameListProps } from '../../../../../services/types';
 import Dropdown from '../../atoms/Dropdown';
 import Footer from '../../atoms/Footer';
+import { useTavernaContext } from '../../../../../context';
 
 export function Booking() {
   const [selectedGame, setSelectedGame] = useState<GameListProps>();
+  const { gameList } = useTavernaContext();
 
   const temporaryList = [
     {
@@ -36,14 +38,14 @@ export function Booking() {
     },
   ];
 
-  const options = [
-    'Dungeons and Dragons',
-    'Magic: The Gathering',
-    'Warhammer 40,000',
-  ];
+  const options = gameList
+    ? gameList.map((item) => item.title)
+    : ['Dungeons and Dragons', 'Magic: The Gathering', 'Warhammer 40,000'];
 
   const getSelectedGameInfo = (game: string) => {
-    const selectedGame = temporaryList.find((item) => item.title === game);
+    const selectedGame = (gameList || temporaryList).find(
+      (item) => item.title === game
+    );
 
     setSelectedGame(selectedGame);
   };

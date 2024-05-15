@@ -3,6 +3,7 @@ import ComponentRoutes from './routes';
 import { ThemeProvider } from 'styled-components';
 import { colors } from './styles/colors';
 import { fontSizes } from './styles/fontSize';
+import { BossYaProvider } from './context';
 
 export function App() {
   interface ThemeInterface {
@@ -16,10 +17,12 @@ export function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <ComponentRoutes />
-      <GlobalStyle />
-    </ThemeProvider>
+    <BossYaProvider>
+      <ThemeProvider theme={theme}>
+        <ComponentRoutes />
+        <GlobalStyle />
+      </ThemeProvider>
+    </BossYaProvider>
   );
 }
 
