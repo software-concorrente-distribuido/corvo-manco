@@ -1,5 +1,5 @@
 import taverna_header from '../../../../../assets/taverna.svg';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getPagePath } from './utils';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -44,8 +44,7 @@ export function Header() {
         maxWidth: matches ? '90%' : '100%',
         margin: '0 auto',
         backgroundColor: 'var(--background)',
-        boxShadow: 'none',
-        ...(matches && { padding: '2rem 0' }),
+        ...(matches && { padding: '2rem 0', boxShadow: 'none' }),
       }}
     >
       <Container maxWidth="xl">
@@ -53,12 +52,17 @@ export function Header() {
           <img height={40} src={taverna_header} alt="Logo da Taverna" />
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <S.CustomUl>
-              <S.CustomListItem checked={pathname === '/'}>
-                <Link to="/">Home</Link>
-              </S.CustomListItem>
-              <S.CustomListItem checked={pathname === '/booking'}>
-                <Link to="/booking">Reservas</Link>
-              </S.CustomListItem>
+              {pages.map((page) => (
+                <S.CustomListItem
+                  key={page}
+                  onClick={() => handleCloseNavMenu(page)}
+                  checked={pathname === getPagePath(page)}
+                >
+                  <Typography textAlign="center" fontSize={24}>
+                    {page}
+                  </Typography>
+                </S.CustomListItem>
+              ))}
             </S.CustomUl>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, marginLeft: 'auto' }}>
