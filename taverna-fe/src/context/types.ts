@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { GameListProps } from '../services/types';
 
 export interface TavernaContextData {
-  gameList?: GameListProps[];
+  gameList: GameListProps[];
 }
 
 export interface TavernaProviderProps {

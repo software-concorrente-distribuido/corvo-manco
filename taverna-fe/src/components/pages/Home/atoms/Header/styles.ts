@@ -1,21 +1,12 @@
 import styled from 'styled-components';
 
-export const Header = styled.header`
+export const CustomUl = styled.ul`
   display: flex;
-  background-color: var(--background);
-  color: #fff;
-  padding: 2rem 10%;
+  gap: 1rem;
+  margin-left: 2rem;
 
-  nav {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    max-wid
-  }
-
-  ul {
-    display: flex;
-    gap: 1rem;
+  @media (max-width: 900px) {
+    display: none;
   }
 `;
 

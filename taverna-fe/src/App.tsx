@@ -3,7 +3,7 @@ import ComponentRoutes from './routes';
 import { ThemeProvider } from 'styled-components';
 import { colors } from './styles/colors';
 import { fontSizes } from './styles/fontSize';
-import { BossYaProvider } from './context';
+import { TavernaProvider } from './context';
 
 export function App() {
   interface ThemeInterface {
@@ -17,12 +17,12 @@ export function App() {
   };
 
   return (
-    <BossYaProvider>
+    <TavernaProvider>
       <ThemeProvider theme={theme}>
         <ComponentRoutes />
         <GlobalStyle />
       </ThemeProvider>
-    </BossYaProvider>
+    </TavernaProvider>
   );
 }
 

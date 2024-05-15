@@ -13,7 +13,6 @@ export const Main = styled.main`
 
 export const Content = styled.div`
   display: flex;
-  bottom: 0;
   color: #fff;
   max-width: 80%;
   gap: 40px;
@@ -21,6 +20,12 @@ export const Content = styled.div`
   padding: 20px;
   margin: 36px auto;
   justify-content: space-between;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+  }
 `;
 
 // export const Main = styled.main`

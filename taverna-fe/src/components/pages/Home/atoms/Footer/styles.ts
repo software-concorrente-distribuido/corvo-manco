@@ -12,4 +12,21 @@ export const Footer = styled.footer`
   h1 {
     font-weight: 400;
   }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 2rem;
+
+    img {
+      max-width: 100%;
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
 `;
