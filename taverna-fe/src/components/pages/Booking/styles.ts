@@ -78,7 +78,8 @@ export const RightContent = styled.div`
 
 export const GameSelectorWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 16px;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -87,4 +88,15 @@ export const GameInfoWrapper = styled.div`
   flex-direction: column;
   gap: 10px;
   margin-top: 40px;
+`;
+
+export const ContinueButton = styled.button`
+  margin-top: 20px;
+  background-color: #fff;
+  color: #000;
+  width: fit-content;
+  padding: 10px 20px;
+  border: 2px solid #383838;
+  font-family: Century Gothic;
+  cursor: pointer;
 `;

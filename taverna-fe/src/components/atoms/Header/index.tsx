@@ -1,4 +1,4 @@
-import taverna_header from '../../../../../assets/taverna.svg';
+import taverna_header from '../../../assets/taverna.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getPagePath } from './utils';
 import useMediaQuery from '@mui/material/useMediaQuery';
