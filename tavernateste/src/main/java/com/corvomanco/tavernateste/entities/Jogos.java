@@ -26,13 +26,13 @@ public class Jogos {
 
     public String descricao;
 
-    public String imgUrl;
+    public String img_url;
 
     @NotBlank
     @Length(max = 50)
     public String categoria;
 
-    public int qtdTotal;
+    public int qtd_total;
 
 
 

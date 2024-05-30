@@ -25,7 +25,7 @@ public class Reservas {
     private Usuario usuario;
 
     
-    private LocalDate horarioInicio;
+    private LocalDate inicio;
 
-    private LocalDate horarioFim;
+    private LocalDate fim;
 }

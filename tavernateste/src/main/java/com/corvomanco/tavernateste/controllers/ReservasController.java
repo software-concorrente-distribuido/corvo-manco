@@ -47,11 +47,11 @@ public class ReservasController {
     @PostMapping
     public ResponseEntity<?> createReserva(@RequestBody ReservaDTO reservaDTO) {
         // Verifica se o usuario existe
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(reservaDTO.getIdUsuario());
+        /*Optional<Usuario> usuarioOptional = usuarioRepository.findById(reservaDTO.getIdUsuario());
         if (!usuarioOptional.isPresent()) {
             // Retorna BadRequest com mensagem de erro se o usuario nao existir
             return ResponseEntity.badRequest().body("Usuário não encontrado.");
-        }
+        }*/
 
         // Verifica se a mesa existe
         Optional<Mesas> mesaOptional = mesasRepository.findById(reservaDTO.getIdMesa());
@@ -68,9 +68,9 @@ public class ReservasController {
 
             // Cria a reserva
             Reservas reserva = Reservas.builder()
-                    .usuario(usuarioOptional.get())
-                    .horarioInicio(reservaDTO.getHorarioInicio())
-                    .horarioFim(reservaDTO.getHorarioFim())
+                    //.usuario(usuarioOptional.get())
+                    .inicio(reservaDTO.getInicio())
+                    .fim(reservaDTO.getFim())
                     .build();
 
             Reservas savedReserva = reservasRepository.save(reserva);

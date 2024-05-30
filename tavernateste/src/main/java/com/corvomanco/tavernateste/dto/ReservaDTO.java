@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ReservaDTO {
-    private Long idUsuario;
+    //private Long idUsuario;
     private Long idMesa;
-    private LocalDate horarioInicio;
-    private LocalDate horarioFim;
+    private LocalDate inicio;
+    private LocalDate fim;
 }
