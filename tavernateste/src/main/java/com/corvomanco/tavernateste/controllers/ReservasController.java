@@ -97,7 +97,22 @@ public class ReservasController {
             return ResponseEntity.notFound().build();
         }
 
+        // Buscar todas as mesas reservadas associadas à reserva
+        List<MesasReservadas> mesasReservadas = mesasReservadasRepository.findByReservaId(id);
+
+        // Remover associações de mesas reservadas
+        for (MesasReservadas mesaReservada : mesasReservadas) {
+            mesasReservadasRepository.delete(mesaReservada);
+
+            // Incrementar a quantidade de mesas disponíveis
+            Mesas mesa = mesaReservada.getMesa();
+            mesa.setQuantidade(mesa.getQuantidade() + 1);
+            mesasRepository.save(mesa);
+        }
+
+        // Deletar a reserva
         reservasRepository.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
 }
