@@ -11,6 +11,7 @@ import Calendar from '../../atoms/Calendar';
 import { Dayjs } from 'dayjs';
 import Modal from 'react-modal';
 import { AiOutlineClose } from 'react-icons/ai';
+import Button from '../../atoms/Button';
 
 Modal.setAppElement('#root');
 
@@ -79,9 +80,7 @@ export function Booking() {
                   </span>
                 </S.GameInfoWrapper>
                 {selectedGame && (
-                  <S.ContinueButton onClick={() => setBookingStep(2)}>
-                    Continuar
-                  </S.ContinueButton>
+                  <Button onClick={() => setBookingStep(2)}>Continuar</Button>
                 )}
               </>
             )}
@@ -102,9 +101,9 @@ export function Booking() {
                   </S.GameSelectorWrapper>
                 )}
                 {selectedDate && selectedTime !== '' && (
-                  <S.ContinueButton onClick={() => setIsModalOpen(true)}>
+                  <Button onClick={() => setIsModalOpen(true)}>
                     Checkar disponibilidade
-                  </S.ContinueButton>
+                  </Button>
                 )}
               </>
             )}
@@ -139,12 +138,8 @@ export function Booking() {
         {disponibleTables > 0 && (
           <>
             <h1>Deseja confirmar a reserva?</h1>
-            <S.ContinueButton onClick={() => console.log()}>
-              Sim
-            </S.ContinueButton>
-            <S.ContinueButton onClick={() => setIsModalOpen(false)}>
-              Não
-            </S.ContinueButton>
+            <Button onClick={() => console.log()}>Sim</Button>
+            <Button onClick={() => setIsModalOpen(false)}>Não</Button>
           </>
         )}
       </Modal>
