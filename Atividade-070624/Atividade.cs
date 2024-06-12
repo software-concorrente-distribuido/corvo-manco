@@ -1,6 +1,3 @@
-﻿using System.Threading;
-using System;
-
 namespace Atividade
 {
     public class Mailbox
