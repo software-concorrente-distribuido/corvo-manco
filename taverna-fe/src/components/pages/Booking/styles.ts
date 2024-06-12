@@ -78,7 +78,8 @@ export const RightContent = styled.div`
 
 export const GameSelectorWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 16px;
+  justify-content: space-between;
   align-items: center;
 `;
 

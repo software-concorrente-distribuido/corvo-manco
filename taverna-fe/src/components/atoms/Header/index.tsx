@@ -1,4 +1,4 @@
-import taverna_header from '../../../../../assets/taverna.svg';
+import taverna_header from '../../../assets/taverna.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getPagePath } from './utils';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -44,7 +44,7 @@ export function Header() {
         maxWidth: matches ? '90%' : '100%',
         margin: '0 auto',
         backgroundColor: 'var(--background)',
-        ...(matches && { padding: '2rem 0', boxShadow: 'none' }),
+        ...(matches && { padding: '1rem 0', boxShadow: 'none' }),
       }}
     >
       <Container maxWidth="xl">

@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from '../components/pages/Home/page/Home';
-import Booking from '../components/pages/Home/page/Booking';
+import Home from '../components/pages/Home';
+import Booking from '../components/pages/Booking';
 
 const ComponentRoutes: React.FunctionComponent = () => {
   return (

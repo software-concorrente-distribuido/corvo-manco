@@ -1,4 +1,4 @@
-import taverna_footer from '../../../../../assets/taverna-footer.svg';
+import taverna_footer from '../../../assets/taverna-footer.svg';
 
 import * as S from './styles';
 
