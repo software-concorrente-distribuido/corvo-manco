@@ -2,12 +2,14 @@ import { createContext, useState, useContext, useEffect } from 'react';
 import { TavernaContextData, TavernaProviderProps } from './types';
 import services from '../services/services';
 import { GameListProps } from '../services/types';
+import { Socket } from 'socket.io-client';
 
 export const TavernaContext = createContext<TavernaContextData>(
   {} as TavernaContextData
 );
 
 export const TavernaProvider = ({ children }: TavernaProviderProps) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [gameList, setGameList] = useState<GameListProps[]>([
     {
       title: 'Dungeons and Dragons',
@@ -51,6 +53,8 @@ export const TavernaProvider = ({ children }: TavernaProviderProps) => {
     <TavernaContext.Provider
       value={{
         gameList,
+        socket,
+        setSocket,
       }}
     >
       {children}
