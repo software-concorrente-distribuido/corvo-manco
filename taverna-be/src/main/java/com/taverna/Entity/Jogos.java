@@ -36,4 +36,17 @@ public class Jogos {
 
     @Column(name = "qtd_total")
     private int qtdTotal;
+
+    @ManyToOne
+    @JoinColumn(name = "reserva_id", nullable = false)
+    private Reservas reserva;
+
+    @Enumerated(EnumType.STRING)
+    private StatusJogo status;
+
+    public enum StatusJogo {
+        PENDENTE,
+        CONFIRMADO,
+        CANCELADO
+    }
 }

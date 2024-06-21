@@ -21,12 +21,14 @@ public class ReservasController {
     private final ReservasRepository reservasRepository;
     private final ClienteRepository clienteRepository;
     private final MesasReservadasRepository mesasReservadasRepository;
+    private final ReservaService reservaService;
 
     // Injeção das dependências
-    public ReservasController(ReservasRepository reservasRepository, ClienteRepository clienteRepository, MesasReservadasRepository mesasReservadasRepository) {
+    public ReservasController(ReservasRepository reservasRepository, ClienteRepository clienteRepository, MesasReservadasRepository mesasReservadasRepository, ReservaService reservaService ) {
         this.reservasRepository = reservasRepository;
         this.clienteRepository = clienteRepository;
         this.mesasReservadasRepository = mesasReservadasRepository;
+        this.reservaService = reservaService;
     }
 
     // Método GET pra retornar todas as reservas na tabela
@@ -43,33 +45,50 @@ public class ReservasController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Método POST para criar a reserva na tabela
-    // Lógica de verificação da disponibilidade da mesa com o método IsMesaDisponivel
     @PostMapping
-    public ResponseEntity<Reservas> createReserva(@RequestBody Reservas reserva) {
-        // Verificar se a mesa está disponível no horário solicitado
+    public ResponseEntity<String> createReserva(@RequestBody Reservas reserva) {
+        if (reserva == null || reserva.getMesasReservadas() == null || reserva.getHorarioInicio() == null || reserva.getHorarioFim() == null) {
+            return ResponseEntity.badRequest().body("Detalhes da reserva inválidos.");
+        }
+
         Optional<MesasReservadas> mesaReservadaOpt = mesasReservadasRepository.findById(reserva.getMesasReservadas().getId());
         if (mesaReservadaOpt.isPresent()) {
             MesasReservadas mesaReservada = mesaReservadaOpt.get();
-            // Supondo que temos uma lógica para verificar disponibilidade
             if (isMesaDisponivel(mesaReservada, reserva.getHorarioInicio(), reserva.getHorarioFim())) {
-                // Salvar a reserva
-                Reservas savedReserva = reservasRepository.save(reserva);
-                return ResponseEntity.ok(savedReserva);
+                reserva.setStatus(Reservas.StatusReserva.PENDENTE);
+                reservasRepository.save(reserva);
+                reservaService.scheduleReservaCancellation(reserva);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Reserva pendente. Confirme dentro de 5 minutos.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Mesa não está disponível
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Mesa não está disponível no horário solicitado.");
             }
         } else {
-            return ResponseEntity.badRequest().body(null); // Mesa não encontrada
+            return ResponseEntity.badRequest().body("Mesa não encontrada.");
         }
     }
 
-    // Método pra verificar se a mesa está disponpivel
+    @PostMapping("/confirmar/{id}")
+    public ResponseEntity<String> confirmarReserva(@PathVariable Long id) {
+        Optional<Reservas> reservaOpt = reservasRepository.findById(id);
+        if (reservaOpt.isPresent()) {
+            Reservas reserva = reservaOpt.get();
+            if (reserva.getStatus() == Reservas.StatusReserva.PENDENTE) {
+                reserva.setStatus(Reservas.StatusReserva.CONFIRMADA);
+                reservasRepository.save(reserva);
+                return ResponseEntity.ok("Reserva confirmada com sucesso.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Reserva não pode ser confirmada.");
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     private boolean isMesaDisponivel(MesasReservadas mesaReservada, LocalTime horarioInicio, LocalTime horarioFim) {
-
-        List<Reservas> reservas = reservasRepository.findReservasByHorario(
-                mesaReservada, horarioFim, horarioInicio);
+        List<Reservas> reservas = reservasRepository.findReservasByHorario(mesaReservada, horarioFim, horarioInicio)
+                .stream()
+                .filter(reserva -> reserva.getStatus() == Reservas.StatusReserva.CONFIRMADA)
+                .collect(Collectors.toList());
         return reservas.isEmpty();
-
     }
 }

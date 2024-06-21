@@ -28,4 +28,14 @@ public class Reservas {
     @OneToOne
     @JoinColumn(name = "mesasreservadas_id")
     public MesasReservadas mesasReservadas;
+
+    @Enumerated(EnumType.STRING)
+    public StatusReserva status;
+
+    public enum StatusReserva
+    {
+        PENDENTE,
+        CONFIRMADA,
+        CANCELADA
+    }
 }
