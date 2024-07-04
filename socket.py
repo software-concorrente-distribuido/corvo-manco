@@ -1,7 +1,7 @@
 import socket
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(("ip", 80))
+sock.connect(("200.137.218.130", 80))
 
 request = "GET / HTTP/1.1\r\n\n"
 sock.send(request.encode())
