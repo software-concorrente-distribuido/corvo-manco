@@ -1,11 +1,12 @@
 package com.taverna.Controller;
 
-import com.taverna.Entity.Cliente;
+
 import com.taverna.Entity.MesasReservadas;
 import com.taverna.Entity.Reservas;
-import com.taverna.Repository.ClienteRepository;
+import com.taverna.Entity.Usuario;
 import com.taverna.Repository.MesasReservadasRepository;
 import com.taverna.Repository.ReservasRepository;
+import com.taverna.Repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,15 @@ import java.util.Optional;
 public class ReservasController {
 
     private final ReservasRepository reservasRepository;
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
     private final MesasReservadasRepository mesasReservadasRepository;
 
     // Injeção das dependências
-    public ReservasController(ReservasRepository reservasRepository, ClienteRepository clienteRepository, MesasReservadasRepository mesasReservadasRepository) {
+    public ReservasController(ReservasRepository reservasRepository,
+                              UsuarioRepository usuarioRepository,
+                              MesasReservadasRepository mesasReservadasRepository) {
         this.reservasRepository = reservasRepository;
-        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
         this.mesasReservadasRepository = mesasReservadasRepository;
     }
 
@@ -48,7 +51,7 @@ public class ReservasController {
     @PostMapping
     public ResponseEntity<Reservas> createReserva(@RequestBody Reservas reserva) {
         // Verificar se a mesa está disponível no horário solicitado
-        Optional<MesasReservadas> mesaReservadaOpt = mesasReservadasRepository.findById(reserva.getMesasReservadas().getId());
+        Optional<MesasReservadas> mesaReservadaOpt = mesasReservadasRepository.findByIdWithPessimisticLock(reserva.getMesasReservadas().getId());
         if (mesaReservadaOpt.isPresent()) {
             MesasReservadas mesaReservada = mesaReservadaOpt.get();
             // Supondo que temos uma lógica para verificar disponibilidade
@@ -67,7 +70,7 @@ public class ReservasController {
     // Método pra verificar se a mesa está disponpivel
     private boolean isMesaDisponivel(MesasReservadas mesaReservada, LocalTime horarioInicio, LocalTime horarioFim) {
 
-        List<Reservas> reservas = reservasRepository.findReservasByHorario(
+        List<Reservas> reservas = reservasRepository.findReservasByMesaAndHorarioBetween(
                 mesaReservada, horarioFim, horarioInicio);
         return reservas.isEmpty();
 

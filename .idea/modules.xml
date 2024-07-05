@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/corvo-manco.iml" filepath="$PROJECT_DIR$/.idea/corvo-manco.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taverna-be/taverna.iml" filepath="$PROJECT_DIR$/taverna-be/taverna.iml" />
     </modules>
   </component>
 </project>

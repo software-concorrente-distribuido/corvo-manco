@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Table(name = "Usuario")
 @Entity(name = "Usuario")
 @NoArgsConstructor
@@ -41,7 +43,16 @@ public class Usuario {
     @Size(max = 20, message = "Telefone não deve exceder 20 caracteres.")
     private String telefone;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_reservas", referencedColumnName = "id")
-    private Reservas reserva;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservas> reservas;
+
+    // Getters e Setters
+
+    public List<Reservas> getReserva() {
+        return reservas;
+    }
+
+    public void setReserva(List<Reservas> reservas) {
+        this.reservas = reservas;
+    }
 }
