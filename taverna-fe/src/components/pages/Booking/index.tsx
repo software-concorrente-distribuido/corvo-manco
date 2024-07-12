@@ -101,7 +101,7 @@ export function Booking() {
                   <p>Data:</p>
                   <Calendar value={selectedDate} setValue={setSelectedDate} />
                 </S.GameSelectorWrapper>
-                {selectedDate && (
+                {/* {selectedDate && (
                   <S.GameSelectorWrapper>
                     <p>Horário:</p>
                     <Dropdown
@@ -110,8 +110,8 @@ export function Booking() {
                       label="Selecione"
                     />
                   </S.GameSelectorWrapper>
-                )}
-                {selectedDate && selectedTime !== '' && (
+                )} */}
+                {selectedDate  && (
                   <Button onClick={checkAvailability}>
                     Checkar disponibilidade
                   </Button>

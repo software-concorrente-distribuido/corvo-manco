@@ -11,3 +11,14 @@ export interface TavernaContextData {
 export interface TavernaProviderProps {
   children: ReactNode;
 }
+
+export interface AuthContextType {
+  user: any;
+  signIn: (data: any) => Promise<void>;
+  singOut: () => void;
+  signed: boolean;
+}
+
+export interface AuthProviderProps {
+  children: ReactNode;
+}
