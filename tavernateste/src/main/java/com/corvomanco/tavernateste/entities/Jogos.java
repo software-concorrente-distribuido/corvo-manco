@@ -2,10 +2,7 @@ package com.corvomanco.tavernateste.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 @Table(name = "Jogos")
@@ -18,25 +15,38 @@ public class Jogos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
-    @NotBlank
-    @Length(max = 100)
-    public String nome;
+    @NotBlank(message = "Nome é obrigatório.")
+    @Length(max = 100, message = "Nome não deve exceder 100 caracteres.")
+    @Length(min = 3, message = "Nome não deve ter menos que 3 caracteres.")
+    @Column(name = "nome", nullable = false, length = 100)
+    private String nome;
 
-    public String descricao;
+    @Column(name = "descricao")
+    private String descricao;
 
-    public String img_url;
+    @Column(name = "img_url")
+    private String imgUrl;
 
-    @NotBlank
-    @Length(max = 50)
-    public String categoria;
+    @NotBlank(message = "Categoria é obrigatória")
+    @Length(max = 50, message = "Categoria não deve exceder 50 caracteres")
+    @Column(name = "categoria", nullable = false, length = 50)
+    private String categoria;
 
-    public int qtd_total;
+    @Column(name = "qtd_total")
+    private int qtdTotal;
 
+    @ManyToOne
+    @JoinColumn(name = "reserva_id", nullable = false)
+    private Reservas reserva;
 
+    @Enumerated(EnumType.STRING)
+    private StatusJogo status;
 
-
-
-
+    public enum StatusJogo {
+        PENDENTE,
+        CONFIRMADO,
+        CANCELADO
+    }
 }

@@ -6,26 +6,36 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Table(name = "Reservas")
 @Entity(name = "Reservas")
-@Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class Reservas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    private Usuario usuario;
+    //@OneToOne(mappedBy = "reserva")
+    public Usuario usuario;
+    public LocalTime horarioInicio;
+    public LocalTime horarioFim;
 
-    
-    private LocalDate inicio;
+    @OneToOne
+    @JoinColumn(name = "mesasreservadas_id")
+    public MesasReservadas mesasReservadas;
 
-    private LocalDate fim;
+    @Enumerated(EnumType.STRING)
+    public StatusReserva status;
+
+    public enum StatusReserva
+    {
+        PENDENTE,
+        CONFIRMADA,
+        CANCELADA
+    }
 }

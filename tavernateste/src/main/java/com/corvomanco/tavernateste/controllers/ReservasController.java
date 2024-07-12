@@ -1,42 +1,44 @@
 package com.corvomanco.tavernateste.controllers;
 
-import com.corvomanco.tavernateste.dto.ReservaDTO;
-import com.corvomanco.tavernateste.entities.Mesas;
 import com.corvomanco.tavernateste.entities.MesasReservadas;
 import com.corvomanco.tavernateste.entities.Reservas;
 import com.corvomanco.tavernateste.entities.Usuario;
-import com.corvomanco.tavernateste.repository.MesasRepository;
 import com.corvomanco.tavernateste.repository.MesasReservadasRepository;
 import com.corvomanco.tavernateste.repository.ReservasRepository;
 import com.corvomanco.tavernateste.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.corvomanco.tavernateste.services.ReservaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import java.time.LocalTime;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservasController {
 
-    @Autowired
-    private ReservasRepository reservasRepository;
+    private final ReservasRepository reservasRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final MesasReservadasRepository mesasReservadasRepository;
+    private final ReservaService reservaService;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    // Injeção das dependências
+    public ReservasController(ReservasRepository reservasRepository, UsuarioRepository usuarioRepository, MesasReservadasRepository mesasReservadasRepository, ReservaService reservaService ) {
+        this.reservasRepository = reservasRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.mesasReservadasRepository = mesasReservadasRepository;
+        this.reservaService = reservaService;
+    }
 
-    @Autowired
-    private MesasRepository mesasRepository;
-
-    @Autowired
-    private MesasReservadasRepository mesasReservadasRepository;
-
+    // Método GET pra retornar todas as reservas na tabela
     @GetMapping
     public List<Reservas> findAll() {
         return reservasRepository.findAll();
     }
 
+    // Método GET pra buscar uma reserva pelo ID
     @GetMapping("/{id}")
     public ResponseEntity<Reservas> findById(@PathVariable Long id) {
         return reservasRepository.findById(id)
@@ -45,74 +47,49 @@ public class ReservasController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createReserva(@RequestBody ReservaDTO reservaDTO) {
-        // Verifica se o usuario existe
-        /*Optional<Usuario> usuarioOptional = usuarioRepository.findById(reservaDTO.getIdUsuario());
-        if (!usuarioOptional.isPresent()) {
-            // Retorna BadRequest com mensagem de erro se o usuario nao existir
-            return ResponseEntity.badRequest().body("Usuário não encontrado.");
-        }*/
-
-        // Verifica se a mesa existe
-        Optional<Mesas> mesaOptional = mesasRepository.findById(reservaDTO.getIdMesa());
-        if (!mesaOptional.isPresent()) {
-            // Retorna BadRequest com mensagem de erro se a mesa nao existir
-            return ResponseEntity.badRequest().body("Mesa não encontrada.");
+    public ResponseEntity<String> createReserva(@RequestBody Reservas reserva) {
+        if (reserva == null || reserva.getMesasReservadas() == null || reserva.getHorarioInicio() == null || reserva.getHorarioFim() == null) {
+            return ResponseEntity.badRequest().body("Detalhes da reserva inválidos.");
         }
 
-        Mesas mesa = mesaOptional.get();
-        if (mesa.getQuantidade() > 0) {
-            // Decrementa a quantidade de mesas disponíveis
-            mesa.setQuantidade(mesa.getQuantidade() - 1);
-            mesasRepository.save(mesa);
-
-            // Cria a reserva
-            Reservas reserva = Reservas.builder()
-                    //.usuario(usuarioOptional.get())
-                    .inicio(reservaDTO.getInicio())
-                    .fim(reservaDTO.getFim())
-                    .build();
-
-            Reservas savedReserva = reservasRepository.save(reserva);
-
-            // Associa a mesa à reserva
-            MesasReservadas mesasReservadas = MesasReservadas.builder()
-                    .reserva(savedReserva)
-                    .mesa(mesa)
-                    .build();
-
-            mesasReservadasRepository.save(mesasReservadas);
-
-            // Retorna a reserva criada com status 201 (Created)
-            return ResponseEntity.status(201).body(savedReserva);
+        Optional<MesasReservadas> mesaReservadaOpt = mesasReservadasRepository.findById(reserva.getMesasReservadas().getId());
+        if (mesaReservadaOpt.isPresent()) {
+            MesasReservadas mesaReservada = mesaReservadaOpt.get();
+            if (isMesaDisponivel(mesaReservada, reserva.getHorarioInicio(), reserva.getHorarioFim())) {
+                reserva.setStatus(Reservas.StatusReserva.PENDENTE);
+                reservasRepository.save(reserva);
+                reservaService.scheduleReservaCancellation(reserva);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Reserva pendente. Confirme dentro de 5 minutos.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Mesa não está disponível no horário solicitado.");
+            }
         } else {
-            // Retorna BadRequest com mensagem de erro se nao houver mesas disponiveis
-            return ResponseEntity.badRequest().body("Não há mesas disponíveis.");
+            return ResponseEntity.badRequest().body("Mesa não encontrada.");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReserva(@PathVariable Long id) {
-        if (!reservasRepository.existsById(id)) {
+    @PostMapping("/confirmar/{id}")
+    public ResponseEntity<String> confirmarReserva(@PathVariable Long id) {
+        Optional<Reservas> reservaOpt = reservasRepository.findById(id);
+        if (reservaOpt.isPresent()) {
+            Reservas reserva = reservaOpt.get();
+            if (reserva.getStatus() == Reservas.StatusReserva.PENDENTE) {
+                reserva.setStatus(Reservas.StatusReserva.CONFIRMADA);
+                reservasRepository.save(reserva);
+                return ResponseEntity.ok("Reserva confirmada com sucesso.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Reserva não pode ser confirmada.");
+            }
+        } else {
             return ResponseEntity.notFound().build();
         }
+    }
 
-        // Buscar todas as mesas reservadas associadas à reserva
-        List<MesasReservadas> mesasReservadas = mesasReservadasRepository.findByReservaId(id);
-
-        // Remover associações de mesas reservadas
-        for (MesasReservadas mesaReservada : mesasReservadas) {
-            mesasReservadasRepository.delete(mesaReservada);
-
-            // Incrementar a quantidade de mesas disponíveis
-            Mesas mesa = mesaReservada.getMesa();
-            mesa.setQuantidade(mesa.getQuantidade() + 1);
-            mesasRepository.save(mesa);
-        }
-
-        // Deletar a reserva
-        reservasRepository.deleteById(id);
-
-        return ResponseEntity.noContent().build();
+    private boolean isMesaDisponivel(MesasReservadas mesaReservada, LocalTime horarioInicio, LocalTime horarioFim) {
+        List<Reservas> reservas = reservasRepository.findReservasByHorario(mesaReservada, horarioFim, horarioInicio)
+                .stream()
+                .filter(reserva -> reserva.getStatus() == Reservas.StatusReserva.CONFIRMADA)
+                .toList();
+        return reservas.isEmpty();
     }
 }

@@ -82,10 +82,4 @@ public class MesasController {
         mesas.setAtivo();
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
-
 }
