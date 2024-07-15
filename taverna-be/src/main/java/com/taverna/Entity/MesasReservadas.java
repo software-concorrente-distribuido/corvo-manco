@@ -20,8 +20,8 @@ public class MesasReservadas {
 
     @ManyToOne
     @JoinColumn(name = "mesas_id", nullable = false)
-    public Mesas mesas;
+    public Mesas mesa;
 
-    @OneToOne(mappedBy = "mesasreservadas")
-    public Reservas reserva;
+    @OneToOne(mappedBy = "mesasReservadas")
+    private Reservas reserva;
 }

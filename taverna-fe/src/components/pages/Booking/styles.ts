@@ -89,14 +89,3 @@ export const GameInfoWrapper = styled.div`
   gap: 10px;
   margin-top: 40px;
 `;
-
-export const ContinueButton = styled.button`
-  margin-top: 20px;
-  background-color: #fff;
-  color: #000;
-  width: fit-content;
-  padding: 10px 20px;
-  border: 2px solid #383838;
-  font-family: Century Gothic;
-  cursor: pointer;
-`;

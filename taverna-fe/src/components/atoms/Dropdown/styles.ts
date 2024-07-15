@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const DropdownContainer = styled.div`
   position: relative;
   width: 240px;
-  font-family: 'Arial';
+  font-family: 'Inter';
 `;
 
 export const DropdownHeader = styled.div`

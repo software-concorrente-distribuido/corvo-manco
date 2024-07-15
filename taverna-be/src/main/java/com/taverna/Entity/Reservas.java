@@ -20,10 +20,18 @@ public class Reservas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @OneToOne(mappedBy = "reservas")
-    public Cliente cliente;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    public Usuario usuario;
     public LocalTime horarioInicio;
     public LocalTime horarioFim;
+
+    @Column(name = "horario")
+    private LocalTime horario;
+
+    @ManyToOne
+    @JoinColumn(name = "mesa_id")
+    private Mesas mesa;
 
     @OneToOne
     @JoinColumn(name = "mesasreservadas_id")

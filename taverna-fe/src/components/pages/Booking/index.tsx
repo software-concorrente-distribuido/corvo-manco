@@ -11,6 +11,10 @@ import Calendar from '../../atoms/Calendar';
 import { Dayjs } from 'dayjs';
 import Modal from 'react-modal';
 import { AiOutlineClose } from 'react-icons/ai';
+import Button from '../../atoms/Button';
+import { useSocket } from '../../../socket';
+import ConfirmationModal from '../../template/ConfirmationModal';
+import TimeoutWarning from '../../template/TimeoutModal';
 
 Modal.setAppElement('#root');
 
@@ -20,8 +24,12 @@ export function Booking() {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('');
+  const [connect, setConnect] = useState<boolean>(false);
   const [bookingStep, setBookingStep] = useState<number>(1);
-  const { gameList } = useTavernaContext();
+  const { gameList, setSocket } = useTavernaContext();
+
+  useSocket(connect, setSocket, () => console.log());
 
   // TODO: remove all mock data
   const timeOptions = [
@@ -41,14 +49,18 @@ export function Booking() {
     '22:00',
   ];
 
-  const disponibleTables = 3;
-
   const options = gameList.map((item) => item.title) || [];
 
   const getSelectedGameInfo = (game: string) => {
     const selectedGame = gameList.find((item) => item.title === game);
 
     setSelectedGame(selectedGame);
+  };
+
+  const checkAvailability = () => {
+    setModalType('confirmation');
+    setIsModalOpen(true);
+    setConnect(true);
   };
 
   return (
@@ -79,9 +91,7 @@ export function Booking() {
                   </span>
                 </S.GameInfoWrapper>
                 {selectedGame && (
-                  <S.ContinueButton onClick={() => setBookingStep(2)}>
-                    Continuar
-                  </S.ContinueButton>
+                  <Button onClick={() => setBookingStep(2)}>Continuar</Button>
                 )}
               </>
             )}
@@ -102,9 +112,9 @@ export function Booking() {
                   </S.GameSelectorWrapper>
                 )}
                 {selectedDate && selectedTime !== '' && (
-                  <S.ContinueButton onClick={() => setIsModalOpen(true)}>
+                  <Button onClick={checkAvailability}>
                     Checkar disponibilidade
-                  </S.ContinueButton>
+                  </Button>
                 )}
               </>
             )}
@@ -128,24 +138,14 @@ export function Booking() {
         <div className="close-button" onClick={() => setIsModalOpen(false)}>
           <AiOutlineClose size="24px" color="#00000099" />
         </div>
-        {disponibleTables > 0 ? (
-          <>
-            <h2>{disponibleTables} mesas disponíveis no horário escolhido</h2>
-            Quantidade: 1 +
-          </>
-        ) : (
-          <h2>Não há mesas disponíveis nesse horário</h2>
+        {modalType === 'confirmation' && (
+          <ConfirmationModal
+            disponibleTables={3}
+            closeModal={() => setIsModalOpen(false)}
+          />
         )}
-        {disponibleTables > 0 && (
-          <>
-            <h1>Deseja confirmar a reserva?</h1>
-            <S.ContinueButton onClick={() => console.log()}>
-              Sim
-            </S.ContinueButton>
-            <S.ContinueButton onClick={() => setIsModalOpen(false)}>
-              Não
-            </S.ContinueButton>
-          </>
+        {modalType === 'TimeoutWarning' && (
+          <TimeoutWarning closeModal={() => setIsModalOpen(false)} />
         )}
       </Modal>
     </S.Booking>

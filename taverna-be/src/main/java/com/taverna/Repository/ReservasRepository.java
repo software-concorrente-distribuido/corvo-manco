@@ -8,6 +8,5 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface ReservasRepository extends JpaRepository<Reservas, Long> {
-    List<Reservas> findReservasByHorario(
-            MesasReservadas mesasReservadas, LocalTime horarioFim, LocalTime horarioInicio);
+    List<Reservas> findReservasByMesaAndHorarioBetween(MesasReservadas mesasReservadas, LocalTime horarioFim, LocalTime horarioInicio);
 }
