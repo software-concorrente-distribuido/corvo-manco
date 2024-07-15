@@ -2,6 +2,7 @@ package com.corvomanco.tavernateste.controllers;
 
 import com.corvomanco.tavernateste.repository.JogosRepository;
 import com.corvomanco.tavernateste.entities.Jogos;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class JogosController {
     }
 
     @PostMapping("/jogos")
+    @Transactional
     public Jogos createUser(@RequestBody Jogos jogos){
         return jogosRepository.save(jogos);
     }

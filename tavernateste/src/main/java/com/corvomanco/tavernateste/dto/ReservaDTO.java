@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ReservaDTO {
-    //private Long idUsuario;
+    private Long idUsuario;
     private Long idMesa;
     private LocalDate inicio;
     private LocalDate fim;

@@ -9,6 +9,7 @@ import com.corvomanco.tavernateste.repository.MesasRepository;
 import com.corvomanco.tavernateste.repository.MesasReservadasRepository;
 import com.corvomanco.tavernateste.repository.ReservasRepository;
 import com.corvomanco.tavernateste.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,22 +46,23 @@ public class ReservasController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<?> createReserva(@RequestBody ReservaDTO reservaDTO) {
         // Verifica se o usuario existe
-        /*Optional<Usuario> usuarioOptional = usuarioRepository.findById(reservaDTO.getIdUsuario());
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(reservaDTO.getIdUsuario());
         if (!usuarioOptional.isPresent()) {
             // Retorna BadRequest com mensagem de erro se o usuario nao existir
             return ResponseEntity.badRequest().body("Usuário não encontrado.");
-        }*/
+        }
 
         // Verifica se a mesa existe
-        Optional<MesasReservadas> mesaOptional = mesasRepository.findByIdWithPessimisticLock(reservaDTO.getIdMesa());
+        Optional<Mesas> mesaOptional = mesasRepository.findByIdWithPessimisticLock(reservaDTO.getIdMesa());
         if (!mesaOptional.isPresent()) {
             // Retorna BadRequest com mensagem de erro se a mesa nao existir
             return ResponseEntity.badRequest().body("Mesa não encontrada.");
         }
 
-        Mesas mesa = mesaOptional.get().getMesa();
+        Mesas mesa = mesaOptional.get();
         if (mesa.getQuantidade() > 0) {
             // Decrementa a quantidade de mesas disponíveis
             mesa.setQuantidade(mesa.getQuantidade() - 1);
@@ -68,7 +70,7 @@ public class ReservasController {
 
             // Cria a reserva
             Reservas reserva = Reservas.builder()
-                    //.usuario(usuarioOptional.get())
+                    .usuario(usuarioOptional.get())
                     .inicio(reservaDTO.getInicio())
                     .fim(reservaDTO.getFim())
                     .build();
