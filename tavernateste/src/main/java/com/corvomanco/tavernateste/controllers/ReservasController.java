@@ -54,13 +54,13 @@ public class ReservasController {
         }*/
 
         // Verifica se a mesa existe
-        Optional<Mesas> mesaOptional = mesasRepository.findById(reservaDTO.getIdMesa());
+        Optional<MesasReservadas> mesaOptional = mesasRepository.findByIdWithPessimisticLock(reservaDTO.getIdMesa());
         if (!mesaOptional.isPresent()) {
             // Retorna BadRequest com mensagem de erro se a mesa nao existir
             return ResponseEntity.badRequest().body("Mesa não encontrada.");
         }
 
-        Mesas mesa = mesaOptional.get();
+        Mesas mesa = mesaOptional.get().getMesa();
         if (mesa.getQuantidade() > 0) {
             // Decrementa a quantidade de mesas disponíveis
             mesa.setQuantidade(mesa.getQuantidade() - 1);
@@ -98,7 +98,7 @@ public class ReservasController {
         }
 
         // Buscar todas as mesas reservadas associadas à reserva
-        List<MesasReservadas> mesasReservadas = mesasReservadasRepository.findByReservaId(id);
+        List<MesasReservadas> mesasReservadas = mesasReservadasRepository.findByIdWithPessimisticLock(id);
 
         // Remover associações de mesas reservadas
         for (MesasReservadas mesaReservada : mesasReservadas) {
