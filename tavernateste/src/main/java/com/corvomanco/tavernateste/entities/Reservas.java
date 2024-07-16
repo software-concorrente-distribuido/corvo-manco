@@ -23,9 +23,6 @@ public class Reservas {
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
     private Usuario usuario;
-
-    
     private LocalDate inicio;
-
     private LocalDate fim;
 }

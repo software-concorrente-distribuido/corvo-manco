@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.corvomanco.tavernateste.usuarios.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,9 +33,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+
         logger.info("Request URL: " + request.getRequestURL());
 
         var tokenJWT = recuperarToken(request);
+
 
         if (tokenJWT != null) {
             var subject = tokenService.getSubject(tokenJWT);
@@ -52,6 +55,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             logger.warn("Token not found in request");
         }
 
+
         filterChain.doFilter(request, response);
     }
 
@@ -63,3 +67,4 @@ public class SecurityFilter extends OncePerRequestFilter {
         return null;
     }
 }
+

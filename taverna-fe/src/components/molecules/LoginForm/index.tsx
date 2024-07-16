@@ -1,18 +1,34 @@
 import * as S from './styles';
 import Input from '../../atoms/Input';
 import Button from '../../atoms/Button';
+import { useState } from 'react';
+import { useAuth } from "../../../context/useAuth";
 
 export function LoginForm({
   openRegisterForm,
 }: {
   openRegisterForm: () => void;
 }) {
+
+  const [login, setLogin] = useState('');
+  const [senha, setSenha] = useState('');
+  const { loginUser } = useAuth();
+
+  const handleLogin = async () => {
+    const data = {
+      login,
+      senha
+    };
+    loginUser(data.login, data.senha);
+    console.log(data);
+  }
+
   return (
     <>
-      <Input placeholder="Usuário" onChange={console.log} type="text" />
-      <Input placeholder="Senha" onChange={console.log} type="password" />
+      <Input placeholder="Usuário" onChange={(e) => setLogin(e.target.value)} type="text" />
+      <Input placeholder="Senha" onChange={(e) => setSenha(e.target.value)} type="password" />
       <S.ButtonWrapper>
-        <Button fullwidth onClick={console.log}>
+        <Button fullwidth onClick={handleLogin}>
           Entrar
         </Button>
         <Button fullwidth onClick={openRegisterForm} hierarchy="secondary">

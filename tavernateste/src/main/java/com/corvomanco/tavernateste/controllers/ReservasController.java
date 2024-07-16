@@ -62,6 +62,9 @@ public class ReservasController {
             return ResponseEntity.badRequest().body("Mesa não encontrada.");
         }
 
+        // TODO: Verificar se o jogo existe no body da requisição
+
+
         Mesas mesa = mesaOptional.get();
         if (mesa.getQuantidade() > 0) {
             // Decrementa a quantidade de mesas disponíveis

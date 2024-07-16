@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { colors } from './styles/colors';
 import { fontSizes } from './styles/fontSize';
 import { TavernaProvider } from './context';
+import { UserProvider } from './context/useAuth'
 
 export function App() {
   interface ThemeInterface {
@@ -17,12 +18,14 @@ export function App() {
   };
 
   return (
-    <TavernaProvider>
-      <ThemeProvider theme={theme}>
-        <ComponentRoutes />
-        <GlobalStyle />
-      </ThemeProvider>
-    </TavernaProvider>
+    <UserProvider>
+      <TavernaProvider>
+        <ThemeProvider theme={theme}>
+          <ComponentRoutes />
+          <GlobalStyle />
+        </ThemeProvider>
+      </TavernaProvider>
+    </UserProvider>
   );
 }
 
