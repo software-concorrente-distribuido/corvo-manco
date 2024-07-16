@@ -14,7 +14,7 @@ export interface TavernaProviderProps {
 }
 
 export interface AuthContextType {
-  usuario: UserProfile | null;
+  login: UserProfile | null;
   signIn: (data: any) => Promise<void>;
   singOut: () => void;
   signed: boolean;

@@ -65,7 +65,6 @@ export function Booking() {
 
   return (
     <S.Booking>
-      <Header />
       <S.Main>
         <S.Content>
           <S.LeftContent>

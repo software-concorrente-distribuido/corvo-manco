@@ -9,8 +9,8 @@ import React from "react";
 type UserContextType = {
   user: UserProfile | null;
   token: string | null;
-  registerUser: (email: string, usuario: string, senha: string) => void;
-  loginUser: (usuario: string, senha: string) => void;
+  registerUser: (email: string, login: string, senha: string) => void;
+  loginUser: (login: string, senha: string) => void;
   logout: () => void;
   isLoggedIn: () => boolean;
 };
@@ -38,15 +38,15 @@ export const UserProvider = ({ children }: Props) => {
 
   const registerUser = async (
     email: string,
-    usuario: string,
+    login: string,
     senha: string
   ) => {
-    await registerAPI(email, usuario, senha)
+    await registerAPI(email, login, senha)
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res?.data.token);
           const userObj = {
-            usuario: res?.data.usuario,
+            login: res?.data.login,
             email: res?.data.email,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
@@ -59,13 +59,13 @@ export const UserProvider = ({ children }: Props) => {
       .catch((e) => toast.warning("Server error occured"));
   };
 
-  const loginUser = async (usuario: string, senha: string) => {
-    await loginAPI(usuario, senha)
+  const loginUser = async (login: string, senha: string) => {
+    await loginAPI(login, senha)
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res?.data.token);
           const userObj = {
-            usuario: res?.data.usuario,
+            login: res?.data.login,
             email: res?.data.email,
           };
           localStorage.setItem("user", JSON.stringify(userObj));

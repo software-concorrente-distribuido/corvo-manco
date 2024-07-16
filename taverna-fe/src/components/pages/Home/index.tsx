@@ -10,8 +10,6 @@ export function Home() {
 
   return (
     <S.Home>
-      <Header />
-
       <S.Main>
         <S.Content>
           {formType === 'login' && (
