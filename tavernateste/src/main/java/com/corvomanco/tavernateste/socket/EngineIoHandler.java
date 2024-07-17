@@ -34,7 +34,7 @@ public class EngineIoHandler implements HandshakeInterceptor, WebSocketHandler {
     }
 
     @RequestMapping(
-            value = "/socket.io/",
+            value = "/resources/",
             method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
             headers = "Connection!=Upgrade")
     public void httpHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {

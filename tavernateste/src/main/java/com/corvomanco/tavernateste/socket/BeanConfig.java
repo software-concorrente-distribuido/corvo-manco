@@ -27,7 +27,7 @@ public class BeanConfig {
     SocketIoServer socketIoServer(EngineIoServer eioServer) {
         var sioServer = new SocketIoServer(eioServer);
 
-        var namespace = sioServer.namespace("/mynamespace");
+        var namespace = sioServer.namespace("/resources");
 
         namespace.on("connection", args -> {
             var socket = (SocketIoSocket) args[0];
@@ -50,7 +50,7 @@ public class BeanConfig {
                 var uId = SocketUtils.getUserId(socket);
 
                 System.out.println("[Client " + socket.getId() + "][" + uId + "]" + messageVo);
-                socket.send("hello", JsonUtils.toJsonObj(new MessageVo("Server", "Heo khô đi những kỉ niệm xưa kia")));
+                socket.send("hello", JsonUtils.toJsonObj(new MessageVo("Server", "test server")));
             });
         });
 

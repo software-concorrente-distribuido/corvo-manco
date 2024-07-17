@@ -3,7 +3,9 @@ import * as T from './types';
 
 const bookingServices = {
   getTablesDisponibility: async (): Promise<{ quantidade: number }> => {
-    const request = await api.get<{ quantidade: number }>(`/api/mesas/1`);
+    const request = await api.get<{ quantidade: number }>(`/api/mesas/1`, {
+      withCredentials: true,
+    });
     console.log(request.data);
     return request.data;
   },

@@ -1,6 +1,7 @@
 package com.corvomanco.tavernateste.controllers;
 
 import com.corvomanco.tavernateste.dto.ReservaDTO;
+import com.corvomanco.tavernateste.entities.Jogos;
 import com.corvomanco.tavernateste.entities.Mesas;
 import com.corvomanco.tavernateste.entities.MesasReservadas;
 import com.corvomanco.tavernateste.entities.Reservas;
@@ -13,6 +14,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.corvomanco.tavernateste.entities.Jogos;
+import com.corvomanco.tavernateste.repository.JogosRepository;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +35,9 @@ public class ReservasController {
     private MesasRepository mesasRepository;
 
     @Autowired
+    private JogosRepository jogosRepository;
+
+    @Autowired
     private MesasReservadasRepository mesasReservadasRepository;
 
     @GetMapping
@@ -47,6 +54,7 @@ public class ReservasController {
 
     @PostMapping
     @Transactional
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> createReserva(@RequestBody ReservaDTO reservaDTO) {
         // Verifica se o usuario existe
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(reservaDTO.getIdUsuario());
@@ -62,8 +70,13 @@ public class ReservasController {
             return ResponseEntity.badRequest().body("Mesa não encontrada.");
         }
 
-        // TODO: Verificar se o jogo existe no body da requisição
-
+        //Verificar se o jogo existe no body da requisição
+        Optional<Jogos> jogoOptional = jogosRepository.findByIdWithPessimisticLock(reservaDTO.getIdJogo());
+        if (jogoOptional.isPresent()) {
+            Jogos jogo = jogoOptional.get();
+            jogo.setQtd_total(jogo.getQtd_total() - 1);
+            jogosRepository.save(jogo);
+}
 
         Mesas mesa = mesaOptional.get();
         if (mesa.getQuantidade() > 0) {

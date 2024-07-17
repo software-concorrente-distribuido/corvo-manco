@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/mesas")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MesasController {
 
     private final MesasRepository mesasRepository;
@@ -34,6 +35,7 @@ public class MesasController {
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<DadosDetalhamentoMesa> detalhar(@PathVariable Long id){
         var mesas = mesasRepository.getReferenceById(id);
         return ResponseEntity.ok(new DadosDetalhamentoMesa(mesas));
@@ -82,10 +84,4 @@ public class MesasController {
         mesas.setAtivo();
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
-
 }

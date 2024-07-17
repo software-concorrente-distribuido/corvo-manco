@@ -5,7 +5,7 @@ import { listeners } from './listeners';
 
 const react_socket_identifier: string = '';
 
-const socket_server_base_url: string = '';
+const socket_server_base_url: string = 'http://localhost:8080/resources/';
 
 export const useSocket = (
   connect: boolean,

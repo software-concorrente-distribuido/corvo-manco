@@ -16,4 +16,5 @@ public class ReservaDTO {
     private Long idMesa;
     private LocalDate inicio;
     private LocalDate fim;
+    private Long idJogo;
 }

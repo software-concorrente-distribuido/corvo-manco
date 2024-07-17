@@ -32,6 +32,7 @@ export const UserProvider = ({ children }: Props) => {
       setUser(JSON.parse(user));
       setToken(token);
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      console.log(token);
     }
     setIsReady(true);
   }, []);
@@ -67,7 +68,7 @@ export const UserProvider = ({ children }: Props) => {
             id: res?.data.id,
           };
           localStorage.setItem('user', JSON.stringify(userObj));
-          setToken(res?.data.token!);
+          setToken(res?.data.token);
           setUser(userObj!);
           toast.success('Login Success!');
           navigate('/booking');

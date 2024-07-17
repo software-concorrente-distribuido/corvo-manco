@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 public class Jogos {
 
-    @Id
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
@@ -33,10 +33,5 @@ public class Jogos {
     public String categoria;
 
     public int qtd_total;
-
-
-
-
-
 
 }
