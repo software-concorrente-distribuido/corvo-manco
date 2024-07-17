@@ -1,31 +1,51 @@
+import { useAuth } from '../../../context/useAuth';
+import bookingServices from '../../../services/booking';
 import Button from '../../atoms/Button';
 
-export function ConfirmationModal({
-  disponibleTables,
+import * as S from './styles';
+
+export function TableDisponibilityModal({
+  gameId,
+  gameTitle,
+  wantGame,
+  date,
   closeModal,
 }: {
-  disponibleTables: number;
+  gameId: number;
+  gameTitle: string;
+  date: string;
+  wantGame: boolean;
   closeModal: () => void;
 }) {
+  const { user } = useAuth();
+  const onHandleClick = async () => {
+    try {
+      await bookingServices.postBooking({
+        usuario: user?.id!,
+        idMesa: 1,
+        inicio: date,
+        fim: date,
+        ...(wantGame && { idJogo: gameId }),
+      });
+      closeModal();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <>
-      {disponibleTables > 0 ? (
-        <>
-          <h2>{disponibleTables} mesas disponíveis no horário escolhido</h2>
-          Quantidade: 1 +
-        </>
-      ) : (
-        <h2>Não há mesas disponíveis nesse horário</h2>
-      )}
-      {disponibleTables > 0 && (
-        <>
-          <h1>Deseja confirmar a reserva?</h1>
-          <Button onClick={() => console.log()}>Sim</Button>
-          <Button onClick={closeModal}>Não</Button>
-        </>
-      )}
-    </>
+    <S.ConfirmationModal>
+      <h1>Resumo:</h1>
+      <p>Data: {date}</p>
+      {wantGame && <h3>Jogo: {gameTitle}</h3>}
+      <h3>Mesa: 1</h3>
+      <h3>Deseja confirmar a reserva?</h3>
+      <S.ButtonWrapper>
+        <Button onClick={onHandleClick}>Sim</Button>
+        <Button onClick={closeModal}>Não</Button>
+      </S.ButtonWrapper>
+    </S.ConfirmationModal>
   );
 }
 
-export default ConfirmationModal;
+export default TableDisponibilityModal;

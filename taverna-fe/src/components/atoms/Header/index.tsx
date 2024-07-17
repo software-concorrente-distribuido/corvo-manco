@@ -15,6 +15,8 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
+import { toast } from 'react-toastify';
+import { useAuth } from '../../../context/useAuth';
 
 const pages = ['Home', 'Reservas'];
 
@@ -23,6 +25,7 @@ export function Header() {
   const { pathname } = location;
   const matches = useMediaQuery('(min-width:900px)');
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -34,6 +37,10 @@ export function Header() {
 
   const handleCloseNavMenu = (page: string) => {
     setAnchorElNav(null);
+    if (!isLoggedIn()) {
+      toast.warning('Você precisa estar logado para acessar essa página');
+      return;
+    }
     navigate(getPagePath(page));
   };
 

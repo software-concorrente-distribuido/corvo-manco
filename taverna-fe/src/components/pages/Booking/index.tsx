@@ -13,8 +13,11 @@ import Modal from 'react-modal';
 import { AiOutlineClose } from 'react-icons/ai';
 import Button from '../../atoms/Button';
 import { useSocket } from '../../../socket';
+import TableDisponibilityModal from '../../template/TableDisponibilityModal';
 import ConfirmationModal from '../../template/ConfirmationModal';
 import TimeoutWarning from '../../template/TimeoutModal';
+import bookingServices from '../../../services/booking';
+import Switch from '@mui/material/Switch';
 
 Modal.setAppElement('#root');
 
@@ -23,9 +26,11 @@ export function Booking() {
   const [selectedGame, setSelectedGame] = useState<GameListProps>();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>('');
+  const [disponibility, setDisponibility] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
   const [connect, setConnect] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(false);
   const [bookingStep, setBookingStep] = useState<number>(1);
   const { gameList, setSocket } = useTavernaContext();
 
@@ -57,10 +62,22 @@ export function Booking() {
     setSelectedGame(selectedGame);
   };
 
-  const checkAvailability = () => {
+  const checkAvailability = async () => {
+    try {
+      const disponibility = await bookingServices.getTablesDisponibility();
+      setDisponibility(disponibility.quantidade);
+      setConnect(true);
+    } catch (error) {
+      setDisponibility(0);
+    } finally {
+      setModalType('tableDisponibility');
+      setIsModalOpen(true);
+    }
+  };
+
+  const onHandleContinue = () => {
     setModalType('confirmation');
     setIsModalOpen(true);
-    setConnect(true);
   };
 
   return (
@@ -71,36 +88,10 @@ export function Booking() {
             {bookingStep === 1 && (
               <>
                 <S.GameSelectorWrapper>
-                  <p>Selecione seu jogo:</p>
-                  <Dropdown
-                    options={options}
-                    onSelect={getSelectedGameInfo}
-                    label="Selecione"
-                  />
-                </S.GameSelectorWrapper>
-                <S.GameInfoWrapper>
-                  <h2>{selectedGame?.title || 'Selecione um jogo'}</h2>
-                  <p>{selectedGame?.description || 'Descrição do jogo'}</p>
-                  <span>
-                    <strong>Categoria:</strong>{' '}
-                    {selectedGame?.category || 'N/A'}
-                  </span>
-                  <span>
-                    <strong>Quantidade:</strong> {selectedGame?.quantity || 0}
-                  </span>
-                </S.GameInfoWrapper>
-                {selectedGame && (
-                  <Button onClick={() => setBookingStep(2)}>Continuar</Button>
-                )}
-              </>
-            )}
-            {bookingStep === 2 && (
-              <>
-                <S.GameSelectorWrapper>
                   <p>Data:</p>
                   <Calendar value={selectedDate} setValue={setSelectedDate} />
                 </S.GameSelectorWrapper>
-                {selectedDate && (
+                {/* {selectedDate && (
                   <S.GameSelectorWrapper>
                     <p>Horário:</p>
                     <Dropdown
@@ -109,11 +100,49 @@ export function Booking() {
                       label="Selecione"
                     />
                   </S.GameSelectorWrapper>
-                )}
-                {selectedDate && selectedTime !== '' && (
+                )} */}
+                {selectedDate && (
                   <Button onClick={checkAvailability}>
                     Checkar disponibilidade
                   </Button>
+                )}
+              </>
+            )}
+            {bookingStep === 2 && (
+              <>
+                {!checked && (
+                  <S.GameSelectorWrapper>
+                    <p>Selecione seu jogo:</p>
+                    <Dropdown
+                      options={options}
+                      onSelect={getSelectedGameInfo}
+                      label="Selecione"
+                    />
+                  </S.GameSelectorWrapper>
+                )}
+                <S.SwitchWrapper>
+                  <span>Quero reservar somente a mesa</span>
+                  <Switch
+                    checked={checked}
+                    onChange={() => setChecked(!checked)}
+                  />
+                </S.SwitchWrapper>
+                {!checked && (
+                  <S.GameInfoWrapper>
+                    <h2>{selectedGame?.title || 'Selecione um jogo'}</h2>
+                    <p>{selectedGame?.description || 'Descrição do jogo'}</p>
+                    <span>
+                      <strong>Categoria:</strong>{' '}
+                      {selectedGame?.category || 'N/A'}
+                    </span>
+                    <span>
+                      <strong>Quantidade:</strong> {selectedGame?.quantity || 0}
+                    </span>
+                  </S.GameInfoWrapper>
+                )}
+
+                {(selectedGame || checked) && (
+                  <Button onClick={onHandleContinue}>Continuar</Button>
                 )}
               </>
             )}
@@ -139,7 +168,17 @@ export function Booking() {
         </div>
         {modalType === 'confirmation' && (
           <ConfirmationModal
-            disponibleTables={3}
+            wantGame={!checked}
+            gameId={selectedGame?.id || 0}
+            gameTitle={selectedGame?.title || ''}
+            date={selectedDate?.format('YYYY-MM-DD') || ''}
+            closeModal={() => setIsModalOpen(false)}
+          />
+        )}
+        {modalType === 'tableDisponibility' && (
+          <TableDisponibilityModal
+            nextStep={() => setBookingStep(2)}
+            disponibleTables={disponibility}
             closeModal={() => setIsModalOpen(false)}
           />
         )}

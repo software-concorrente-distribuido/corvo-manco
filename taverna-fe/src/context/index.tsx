@@ -13,12 +13,14 @@ export const TavernaProvider = ({ children }: TavernaProviderProps) => {
   const [gameList, setGameList] = useState<GameListProps[]>([
     {
       title: 'Dungeons and Dragons',
+      id: 1,
       description: 'A fantasy tabletop role-playing game',
       imgUrl: 'https://wallpapercave.com/wp/wp2770233.jpg',
       category: 'Tabletop',
       quantity: 10,
     },
     {
+      id: 2,
       title: 'Magic: The Gathering',
       description: 'A collectible card game',
       imgUrl:
@@ -27,6 +29,7 @@ export const TavernaProvider = ({ children }: TavernaProviderProps) => {
       quantity: 5,
     },
     {
+      id: 3,
       title: 'Warhammer 40,000',
       description: 'A miniature wargame',
       imgUrl:

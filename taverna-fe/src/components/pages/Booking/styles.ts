@@ -89,3 +89,9 @@ export const GameInfoWrapper = styled.div`
   gap: 10px;
   margin-top: 40px;
 `;
+
+export const SwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
