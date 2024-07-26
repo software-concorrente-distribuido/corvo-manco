@@ -33,6 +33,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/mesas/1").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
