@@ -1,10 +1,12 @@
 import { api } from './api';
 import * as T from './types';
 
+
 const bookingServices = {
   getTablesDisponibility: async (): Promise<{ quantidade: number }> => {
+    const token = localStorage.getItem('token');
     const request = await api.get<{ quantidade: number }>(`/api/mesas/1`, {
-      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` }
     });
     console.log(request.data);
     return request.data;
