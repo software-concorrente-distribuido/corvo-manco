@@ -10,12 +10,14 @@ export function TableDisponibilityModal({
   wantGame,
   date,
   closeModal,
+  setConnect,
 }: {
   gameId: number;
   gameTitle: string;
   date: string;
   wantGame: boolean;
   closeModal: () => void;
+  setConnect: (connect: boolean) => void;
 }) {
   const { user } = useAuth();
   const onHandleClick = async () => {
@@ -27,6 +29,7 @@ export function TableDisponibilityModal({
         fim: date,
         ...(wantGame && { idJogo: gameId }),
       });
+      setConnect(false);
       closeModal();
     } catch (error) {
       console.error(error);

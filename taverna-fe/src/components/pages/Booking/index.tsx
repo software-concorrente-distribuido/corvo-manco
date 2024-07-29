@@ -2,7 +2,7 @@ import game_alternative from '../../../assets/games.png';
 
 import * as S from './styles';
 import Header from '../../atoms/Header';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GameListProps } from '../../../services/types';
 import Dropdown from '../../atoms/Dropdown';
 import Footer from '../../atoms/Footer';
@@ -15,7 +15,8 @@ import Button from '../../atoms/Button';
 import { useSocket } from '../../../socket';
 import TableDisponibilityModal from '../../template/TableDisponibilityModal';
 import ConfirmationModal from '../../template/ConfirmationModal';
-import TimeoutWarning from '../../template/TimeoutModal';
+import TimeoutModal from '../../template/TimeoutModal';
+import TimeoutWarningModal from '../../template/TimeoutWarningModal';
 import bookingServices from '../../../services/booking';
 import Switch from '@mui/material/Switch';
 
@@ -25,7 +26,8 @@ export function Booking() {
   // TODO: change all states to useReducer
   const [selectedGame, setSelectedGame] = useState<GameListProps>();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string>('');
+  // const [selectedTime, setSelectedTime] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [disponibility, setDisponibility] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
@@ -34,7 +36,12 @@ export function Booking() {
   const [bookingStep, setBookingStep] = useState<number>(1);
   const { gameList, setSocket } = useTavernaContext();
 
-  useSocket(connect, setSocket, () => console.log());
+  const showTimeoutModal = useCallback(() => {
+    setModalType('timeout');
+    setIsModalOpen(true);
+  }, []);
+
+  useSocket(connect, setSocket, showTimeoutModal);
 
   // TODO: remove all mock data
   const timeOptions = [
@@ -54,19 +61,19 @@ export function Booking() {
     '22:00',
   ];
 
-  const options = gameList.map((item) => item.title) || [];
+  const options = gameList.map((item: { title: any }) => item.title) || [];
 
-  const getSelectedGameInfo = (game: string) => {
-    const selectedGame = gameList.find((item) => item.title === game);
-
-    setSelectedGame(selectedGame);
+  const getSelectedGameInfo = async (game: string) => {
+    const selGame = gameList.find(
+      (item: { title: string }) => item.title === game
+    );
+    await checkGameAvailability(selGame?.id || 0, selGame as GameListProps);
   };
 
-  const checkAvailability = async () => {
+  const checkTableAvailability = async () => {
     try {
       const disponibility = await bookingServices.getTablesDisponibility();
       setDisponibility(disponibility.quantidade);
-      setConnect(true);
     } catch (error) {
       setDisponibility(0);
     } finally {
@@ -75,9 +82,54 @@ export function Booking() {
     }
   };
 
+  const checkGameAvailability = async (
+    gameId: number,
+    selGame: GameListProps
+  ) => {
+    if (!gameId) return;
+    setIsLoading(true);
+    try {
+      const disponibility = await bookingServices.getGameDisponibility(gameId);
+      setSelectedGame({ ...selGame, quantity: disponibility.qtd_total });
+    } catch (error) {
+      setSelectedGame({ ...selGame, quantity: 0 });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const onHandleContinue = () => {
     setModalType('confirmation');
     setIsModalOpen(true);
+  };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    let timerTimeout: NodeJS.Timeout;
+    if (connect) {
+      timer = setTimeout(() => {
+        setModalType('timeoutWarning');
+        setIsModalOpen(true);
+      }, 50000);
+
+      timerTimeout = setTimeout(() => {
+        setModalType('timeout');
+        setIsModalOpen(true);
+        setBookingStep(1);
+        setConnect(false);
+        setSelectedGame(undefined);
+        setSelectedDate(null);
+      }, 81000);
+    }
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(timerTimeout);
+    };
+  }, [connect]);
+
+  const handleContinue = () => {
+    setBookingStep(2);
+    setConnect(true);
   };
 
   return (
@@ -102,7 +154,7 @@ export function Booking() {
                   </S.GameSelectorWrapper>
                 )} */}
                 {selectedDate && (
-                  <Button onClick={checkAvailability}>
+                  <Button onClick={checkTableAvailability}>
                     Checkar disponibilidade
                   </Button>
                 )}
@@ -127,7 +179,8 @@ export function Booking() {
                     onChange={() => setChecked(!checked)}
                   />
                 </S.SwitchWrapper>
-                {!checked && (
+                {isLoading && <h1>Carregando...</h1>}
+                {!checked && !isLoading && (
                   <S.GameInfoWrapper>
                     <h2>{selectedGame?.title || 'Selecione um jogo'}</h2>
                     <p>{selectedGame?.description || 'Descrição do jogo'}</p>
@@ -138,10 +191,16 @@ export function Booking() {
                     <span>
                       <strong>Quantidade:</strong> {selectedGame?.quantity || 0}
                     </span>
+                    {selectedGame?.quantity === 0 && (
+                      <span>
+                        <strong>O jogo não está disponível para reserva</strong>
+                      </span>
+                    )}
                   </S.GameInfoWrapper>
                 )}
 
-                {(selectedGame || checked) && (
+                {((selectedGame?.id && selectedGame.quantity > 0) ||
+                  checked) && (
                   <Button onClick={onHandleContinue}>Continuar</Button>
                 )}
               </>
@@ -173,17 +232,21 @@ export function Booking() {
             gameTitle={selectedGame?.title || ''}
             date={selectedDate?.format('YYYY-MM-DD') || ''}
             closeModal={() => setIsModalOpen(false)}
+            setConnect={setConnect}
           />
         )}
         {modalType === 'tableDisponibility' && (
           <TableDisponibilityModal
-            nextStep={() => setBookingStep(2)}
+            nextStep={handleContinue}
             disponibleTables={disponibility}
             closeModal={() => setIsModalOpen(false)}
           />
         )}
-        {modalType === 'TimeoutWarning' && (
-          <TimeoutWarning closeModal={() => setIsModalOpen(false)} />
+        {modalType === 'timeoutWarning' && (
+          <TimeoutWarningModal closeModal={() => setIsModalOpen(false)} />
+        )}
+        {modalType === 'timeout' && (
+          <TimeoutModal closeModal={() => setIsModalOpen(false)} />
         )}
       </Modal>
     </S.Booking>

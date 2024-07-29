@@ -1,14 +1,22 @@
 import { api } from './api';
 import * as T from './types';
 
-
 const bookingServices = {
   getTablesDisponibility: async (): Promise<{ quantidade: number }> => {
     const token = localStorage.getItem('token');
     const request = await api.get<{ quantidade: number }>(`/api/mesas/1`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     console.log(request.data);
+    return request.data;
+  },
+
+  getGameDisponibility: async (id: number): Promise<{ qtd_total: number }> => {
+    const token = localStorage.getItem('token');
+    const request = await api.get<{ qtd_total: number }>(`/api/jogos/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
     return request.data;
   },
 

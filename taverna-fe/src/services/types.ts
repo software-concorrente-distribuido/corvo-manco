@@ -14,3 +14,11 @@ export interface BookingProps {
   fim: string;
   idJogo?: number;
 }
+
+export interface UserData {
+  nome: string;
+  email: string;
+  telefone: string;
+  login: string;
+  senha: string;
+}
