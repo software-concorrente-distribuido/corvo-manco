@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { DefaultEventsMap } from '@socket.io/component-emitter';
 import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
@@ -12,7 +13,7 @@ export const useSocket = (
   setSocket: React.Dispatch<
     React.SetStateAction<Socket<DefaultEventsMap, DefaultEventsMap> | null>
   >,
-  showWarningModal: () => void
+  showTimeoutModal: () => void
 ) =>
   useEffect(() => {
     if (!connect) return;
@@ -23,10 +24,11 @@ export const useSocket = (
       },
     });
 
+    if (!newSocket) return;
     setSocket(() => newSocket);
-    listeners(newSocket, showWarningModal);
+    listeners(newSocket, showTimeoutModal);
 
     return () => {
       newSocket.disconnect();
     };
-  }, [connect, setSocket, showWarningModal]);
+  }, [connect]);

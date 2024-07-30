@@ -1,16 +1,14 @@
 import { createContext, useEffect, useState } from 'react';
 import { UserProfile } from '../models/User';
 import { useNavigate } from 'react-router-dom';
-import { loginAPI, registerAPI } from '../services/auth';
+import { loginAPI } from '../services/auth';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import React from 'react';
 
 type UserContextType = {
   user: UserProfile | null;
   token: string | null;
-  registerUser: (email: string, login: string, senha: string) => void;
-  loginUser: (login: string, senha: string) => void;
+  loginUser: (login: string, senha: string) => Promise<void>;
   logout: () => void;
   isLoggedIn: () => boolean;
 };
@@ -31,30 +29,9 @@ export const UserProvider = ({ children }: Props) => {
     if (user && token) {
       setUser(JSON.parse(user));
       setToken(token);
-      console.log(token);
     }
     setIsReady(true);
   }, []);
-
-  const registerUser = async (email: string, login: string, senha: string) => {
-    await registerAPI(email, login, senha)
-      .then((res) => {
-        if (res) {
-          localStorage.setItem('token', res?.data.token);
-          const userObj = {
-            login: res?.data.login,
-            email: res?.data.email,
-            id: res?.data.id,
-          };
-          localStorage.setItem('user', JSON.stringify(userObj));
-          setToken(res?.data.token!);
-          setUser(userObj!);
-          toast.success('Login Success!');
-          navigate('/booking');
-        }
-      })
-      .catch((e) => toast.warning('Server error occured'));
-  };
 
   const loginUser = async (login: string, senha: string) => {
     await loginAPI(login, senha)
@@ -90,7 +67,7 @@ export const UserProvider = ({ children }: Props) => {
 
   return (
     <UserContext.Provider
-      value={{ loginUser, user, token, logout, isLoggedIn, registerUser }}
+      value={{ loginUser, user, token, logout, isLoggedIn }}
     >
       {isReady ? children : null}
     </UserContext.Provider>
