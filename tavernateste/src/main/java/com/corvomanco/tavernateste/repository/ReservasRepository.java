@@ -1,7 +1,11 @@
-package com.taverna.Repository;
+package com.corvomanco.tavernateste.repository;
 
-import com.taverna.Entity.MesasReservadas;
-import com.taverna.Entity.Reservas;
+import com.corvomanco.tavernateste.entities.Reservas;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+import com.corvomanco.tavernateste.entities.MesasReservadas;
+import com.corvomanco.tavernateste.entities.Reservas;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

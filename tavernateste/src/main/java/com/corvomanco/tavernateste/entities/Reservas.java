@@ -1,4 +1,4 @@
-package com.taverna.Entity;
+package com.corvomanco.tavernateste.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,8 +20,8 @@ public class Reservas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @OneToOne(mappedBy = "reservas")
-    public Cliente cliente;
+    //@OneToOne(mappedBy = "reserva")
+    public Usuario usuario;
     public LocalTime horarioInicio;
     public LocalTime horarioFim;
 

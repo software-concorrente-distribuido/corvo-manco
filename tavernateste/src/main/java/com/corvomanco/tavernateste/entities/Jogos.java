@@ -1,4 +1,4 @@
-package com.taverna.Entity;
+package com.corvomanco.tavernateste.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,13 +1,12 @@
-package com.taverna.Controller;
+package com.corvomanco.tavernateste.controllers;
 
-import com.taverna.Entity.Jogos;
-import com.taverna.Entity.Reservas;
-import com.taverna.Repository.JogosRepository;
-import com.taverna.Repository.ReservasRepository;
-import org.springframework.http.HttpStatus;
+import com.corvomanco.tavernateste.repository.JogosRepository;
+import com.corvomanco.tavernateste.entities.Jogos;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.corvomanco.tavernateste.entities.Reservas;
+import com.corvomanco.tavernateste.repository.ReservasRepository;
+import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Optional;
 

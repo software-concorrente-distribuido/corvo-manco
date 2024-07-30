@@ -1,32 +1,33 @@
-package com.taverna.Controller;
+package com.corvomanco.tavernateste.controllers;
 
-import com.taverna.Entity.Cliente;
-import com.taverna.Entity.MesasReservadas;
-import com.taverna.Entity.Reservas;
-import com.taverna.Repository.ClienteRepository;
-import com.taverna.Repository.MesasReservadasRepository;
-import com.taverna.Repository.ReservasRepository;
-import org.springframework.http.HttpStatus;
+import com.corvomanco.tavernateste.entities.MesasReservadas;
+import com.corvomanco.tavernateste.entities.Reservas;
+import com.corvomanco.tavernateste.entities.Usuario;
+import com.corvomanco.tavernateste.repository.MesasReservadasRepository;
+import com.corvomanco.tavernateste.repository.ReservasRepository;
+import com.corvomanco.tavernateste.repository.UsuarioRepository;
+import com.corvomanco.tavernateste.services.ReservaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import java.time.LocalTime;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservasController {
 
     private final ReservasRepository reservasRepository;
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
     private final MesasReservadasRepository mesasReservadasRepository;
     private final ReservaService reservaService;
 
     // Injeção das dependências
-    public ReservasController(ReservasRepository reservasRepository, ClienteRepository clienteRepository, MesasReservadasRepository mesasReservadasRepository, ReservaService reservaService ) {
+    public ReservasController(ReservasRepository reservasRepository, UsuarioRepository usuarioRepository, MesasReservadasRepository mesasReservadasRepository, ReservaService reservaService ) {
         this.reservasRepository = reservasRepository;
-        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
         this.mesasReservadasRepository = mesasReservadasRepository;
         this.reservaService = reservaService;
     }
@@ -88,7 +89,7 @@ public class ReservasController {
         List<Reservas> reservas = reservasRepository.findReservasByHorario(mesaReservada, horarioFim, horarioInicio)
                 .stream()
                 .filter(reserva -> reserva.getStatus() == Reservas.StatusReserva.CONFIRMADA)
-                .collect(Collectors.toList());
+                .toList();
         return reservas.isEmpty();
     }
 }
