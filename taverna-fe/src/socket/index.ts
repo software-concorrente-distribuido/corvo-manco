@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DefaultEventsMap } from '@socket.io/component-emitter';
+import type { DefaultEventsMap } from '@socket.io/component-emitter';
 import { useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { io, type Socket } from 'socket.io-client';
 import { listeners } from './listeners';
 
 const react_socket_identifier: string = '';

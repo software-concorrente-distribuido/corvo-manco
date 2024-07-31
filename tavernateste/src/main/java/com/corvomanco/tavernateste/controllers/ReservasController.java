@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.corvomanco.tavernateste.entities.Jogos;
 import com.corvomanco.tavernateste.repository.JogosRepository;
+import com.corvomanco.tavernateste.socket.BeanConfig;
 
+import io.socket.socketio.server.SocketIoServer;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +38,9 @@ public class ReservasController {
 
     @Autowired
     private JogosRepository jogosRepository;
+
+    @Autowired
+    private SocketIoServer socketIOServer;
 
     @Autowired
     private MesasReservadasRepository mesasReservadasRepository;
@@ -100,7 +105,12 @@ public class ReservasController {
                     .build();
 
             mesasReservadasRepository.save(mesasReservadas);
-
+            //Envia socket sobre a quantidade de mesas
+            if (mesa.getQuantidade() == 0) {
+                socketIOServer.getBroadcastOperations().sendEvent("no_longer_available", "Não há mais mesas disponíveis.");
+            } else {
+                socketIOServer.getBroadcastOperations().sendEvent("novaReserva", "Reserva criada, mesas restantes: " + mesa.getQuantidade());
+            }
             // Retorna a reserva criada com status 201 (Created)
             return ResponseEntity.status(201).body(savedReserva);
         } else {
