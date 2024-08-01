@@ -33,6 +33,11 @@ export const UserProvider = ({ children }: Props) => {
     setIsReady(true);
   }, []);
 
+  function timeout() {
+    return new Promise(resolve => setTimeout(resolve, 2452));
+}
+
+
   const loginUser = async (login: string, senha: string) => {
     await loginAPI(login, senha)
       .then((res) => {
@@ -50,7 +55,9 @@ export const UserProvider = ({ children }: Props) => {
           navigate('/booking');
         }
       })
-      .catch((e) => {
+      .catch(async (e) => {
+        await timeout()
+
         setToken('sadsadas');
         setUser({
           id: 1,
