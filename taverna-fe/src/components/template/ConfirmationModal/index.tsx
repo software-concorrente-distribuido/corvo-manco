@@ -20,6 +20,10 @@ export function TableDisponibilityModal({
   setConnect: (connect: boolean) => void;
 }) {
   const { user } = useAuth();
+  function timeout() {
+    return new Promise(resolve => setTimeout(resolve, 2452));
+}
+
   const onHandleClick = async () => {
     try {
       await bookingServices.postBooking({
@@ -32,6 +36,7 @@ export function TableDisponibilityModal({
       setConnect(false);
       closeModal();
     } catch (error) {
+      await timeout()
       setConnect(false);
       closeModal();
     }

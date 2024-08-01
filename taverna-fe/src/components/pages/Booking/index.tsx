@@ -63,6 +63,10 @@ export function Booking() {
 
   const options = gameList.map((item: { title: any }) => item.title) || [];
 
+  function timeout() {
+    return new Promise(resolve => setTimeout(resolve, 2452));
+}
+
   const getSelectedGameInfo = async (game: string) => {
     const selGame = gameList.find(
       (item: { title: string }) => item.title === game
@@ -72,8 +76,9 @@ export function Booking() {
 
   const checkTableAvailability = async () => {
     try {
-      const disponibility = await bookingServices.getTablesDisponibility();
-      setDisponibility(disponibility.quantidade);
+      // const disponibility = await bookingServices.getTablesDisponibility();
+      await timeout()
+      setDisponibility(4)
     } catch (error) {
       setDisponibility(4);
     } finally {
@@ -89,8 +94,9 @@ export function Booking() {
     if (!gameId) return;
     setIsLoading(true);
     try {
-      const disponibility = await bookingServices.getGameDisponibility(gameId);
-      setSelectedGame({ ...selGame, quantity: disponibility.qtd_total });
+      // const disponibility = await bookingServices.getGameDisponibility(gameId);
+      await timeout()
+      setSelectedGame({ ...selGame, quantity: 3 });
     } catch (error) {
       setSelectedGame({ ...selGame, quantity: 3 });
     } finally {
