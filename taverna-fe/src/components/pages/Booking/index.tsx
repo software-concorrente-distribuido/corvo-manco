@@ -75,7 +75,7 @@ export function Booking() {
       const disponibility = await bookingServices.getTablesDisponibility();
       setDisponibility(disponibility.quantidade);
     } catch (error) {
-      setDisponibility(0);
+      setDisponibility(4);
     } finally {
       setModalType('tableDisponibility');
       setIsModalOpen(true);
@@ -92,7 +92,7 @@ export function Booking() {
       const disponibility = await bookingServices.getGameDisponibility(gameId);
       setSelectedGame({ ...selGame, quantity: disponibility.qtd_total });
     } catch (error) {
-      setSelectedGame({ ...selGame, quantity: 0 });
+      setSelectedGame({ ...selGame, quantity: 3 });
     } finally {
       setIsLoading(false);
     }

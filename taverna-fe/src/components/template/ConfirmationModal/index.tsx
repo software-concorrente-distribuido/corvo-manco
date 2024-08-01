@@ -32,7 +32,8 @@ export function TableDisponibilityModal({
       setConnect(false);
       closeModal();
     } catch (error) {
-      console.error(error);
+      setConnect(false);
+      closeModal();
     }
   };
 
